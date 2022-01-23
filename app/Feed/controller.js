@@ -34,4 +34,29 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  getFeed: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const dataFeed = await feed.findAll({
+        where: {
+          idUser: id,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "idUser"],
+        },
+        include: {
+          model: user,
+          as: "user",
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
+          },
+        },
+      });
+
+      res.status(201).json({ status: "success", data: { feed: dataFeed } });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
 };
