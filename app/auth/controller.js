@@ -56,4 +56,52 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  SignIn: async (req, res) => {
+    try {
+      const { password, email } = req.body;
+
+      const userExist = await user.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (userExist) {
+        const isMatch = await bcrypt.compare(password, userExist.password);
+        if (isMatch) {
+          const token = jwt.sign(
+            {
+              email: userExist.email,
+              username: userExist.username,
+              fullname: userExist.fullname,
+              image: userExist.image,
+              bio: userExist.bio,
+            },
+            config.jwtKey
+          );
+          res.status(200).json({
+            status: "success",
+            data: {
+              user: {
+                username: userExist.username,
+                fullname: userExist.fullname,
+                email: userExist.email,
+                token,
+              },
+            },
+          });
+        } else {
+          res
+            .status(403)
+            .json({ status: "failed", message: "Wrong password!" });
+        }
+      } else {
+        res
+          .status(404)
+          .json({ status: "failed", message: "Email not register!" });
+      }
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
 };
