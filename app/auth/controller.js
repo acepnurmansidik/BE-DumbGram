@@ -93,12 +93,12 @@ module.exports = {
         } else {
           res
             .status(403)
-            .json({ status: "failed", message: "Wrong password!" });
+            .json({ status: "success", message: "Wrong password!" });
         }
       } else {
         res
           .status(404)
-          .json({ status: "failed", message: "Email not register!" });
+          .json({ status: "success", message: "Email not register!" });
       }
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
