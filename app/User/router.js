@@ -5,7 +5,6 @@ const {
   actionEditUser,
   actionDeleteUser,
   getFollowers,
-  getFollowing,
 } = require("./controller");
 const router = express.Router();
 

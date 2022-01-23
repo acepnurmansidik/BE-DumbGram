@@ -71,6 +71,7 @@ module.exports = {
         if (isMatch) {
           const token = jwt.sign(
             {
+              id: userExist.id,
               email: userExist.email,
               username: userExist.username,
               fullname: userExist.fullname,
