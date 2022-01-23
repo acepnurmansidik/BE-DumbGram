@@ -4,6 +4,7 @@ const express = require("express");
 const authRouter = require("./app/auth/router");
 const userRouter = require("./app/User/router");
 const messageRouter = require("./app/Message/router");
+const feedRouter = require("./app/Feed/router");
 
 const app = express();
 const API = "/api/v1";
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(`${API}`, authRouter);
 app.use(`${API}`, userRouter);
 app.use(`${API}`, messageRouter);
+app.use(`${API}`, feedRouter);
 // add route here to serving static file
 app.use("/uploads", express.static("uploads"));
 

@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class feed extends Model {
     /**
@@ -11,16 +9,25 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      feed.belongsTo(models.user, {
+        as: "user",
+        foreignKey: {
+          name: "idUser",
+        },
+      });
     }
   }
-  feed.init({
-    filename: DataTypes.STRING,
-    caption: DataTypes.TEXT,
-    like: DataTypes.INTEGER,
-    idUser: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'feed',
-  });
+  feed.init(
+    {
+      filename: DataTypes.STRING,
+      caption: DataTypes.TEXT,
+      like: DataTypes.INTEGER,
+      idUser: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "feed",
+    }
+  );
   return feed;
 };
