@@ -35,4 +35,17 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  actionDeleteUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const data = await user.destroy({ where: { id } });
+
+      res
+        .status(200)
+        .json({ status: "success", message: "Server error", data: { data } });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
 };

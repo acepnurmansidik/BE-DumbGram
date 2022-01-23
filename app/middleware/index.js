@@ -15,6 +15,7 @@ module.exports = {
 
       //   send data token
       req.token = token;
+      next();
     } catch (err) {
       res.status(401).json({
         status: "forbidden",
