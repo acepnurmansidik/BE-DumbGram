@@ -96,4 +96,38 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  getComments: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const data = await comments.findAll({
+        where: {
+          idFeed: id,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "idUser", "idFeed"],
+        },
+        include: [
+          {
+            model: user,
+            as: "user",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
+            },
+          },
+          {
+            model: feed,
+            as: "feed",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "id", "like", "idUser"],
+            },
+          },
+        ],
+      });
+
+      res.status(200).json({ status: "success", data: { comments: data } });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
 };
