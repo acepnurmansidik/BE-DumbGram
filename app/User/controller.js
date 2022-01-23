@@ -9,7 +9,6 @@ module.exports = {
         delete item.dataValues.createdAt;
         delete item.dataValues.updatedAt;
       });
-      console.log(data);
       res.status(200).json({ status: "success", data: { user: data } });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
