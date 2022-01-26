@@ -21,9 +21,7 @@ module.exports = {
         include: {
           model: user,
           as: "user",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
-          },
+          attributes: ["id", "username", "fullname", "image"],
         },
       });
 
@@ -46,9 +44,7 @@ module.exports = {
         include: {
           model: user,
           as: "user",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
-          },
+          attributes: ["id", "username", "fullname", "image"],
         },
       });
 
@@ -66,9 +62,7 @@ module.exports = {
         include: {
           model: user,
           as: "user",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
-          },
+          attributes: ["id", "username", "fullname", "image"],
         },
       });
 
@@ -101,23 +95,17 @@ module.exports = {
         where: {
           idFeed: id,
         },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "idUser", "idFeed"],
-        },
+        attributes: ["id", "comment"],
         include: [
           {
             model: user,
             as: "user",
-            attributes: {
-              exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
-            },
+            attributes: ["id", "username", "fullname", "image"],
           },
           {
             model: feed,
             as: "feed",
-            attributes: {
-              exclude: ["createdAt", "updatedAt", "id", "like", "idUser"],
-            },
+            attributes: ["filename", "caption"],
           },
         ],
       });

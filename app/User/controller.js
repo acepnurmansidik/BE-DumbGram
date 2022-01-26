@@ -60,22 +60,11 @@ module.exports = {
 
       const followers = await follow.findAll({
         where: { idUser: id, status: "followers" },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "status", "idUser", "idFollow"],
-        },
+        attributes: ["id"],
         include: {
           model: user,
           as: "user",
-          attributes: {
-            exclude: [
-              "createdAt",
-              "updatedAt",
-              "password",
-              "bio",
-              "image",
-              "email",
-            ],
-          },
+          attributes: ["id", "username", "fullname", "image"],
         },
       });
 
@@ -94,22 +83,11 @@ module.exports = {
 
       const following = await follow.findAll({
         where: { idUser: id, status: "following" },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "status", "idUser", "idFollow"],
-        },
+        attributes: ["id"],
         include: {
           model: user,
           as: "user",
-          attributes: {
-            exclude: [
-              "createdAt",
-              "updatedAt",
-              "password",
-              "bio",
-              "image",
-              "email",
-            ],
-          },
+          attributes: ["id", "username", "fullname", "image"],
         },
       });
 

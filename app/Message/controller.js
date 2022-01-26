@@ -18,15 +18,11 @@ module.exports = {
           idSender: req.userPlayer.id,
           idReceiver: id,
         },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "idSender", "idReceiver"],
-        },
+        attributes: ["id", "message"],
         include: {
           model: user,
           as: "user",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
-          },
+          attributes: ["id", "username", "fullname", "image"],
         },
       });
       res.status(201).json({
@@ -48,15 +44,11 @@ module.exports = {
             [Op.eq]: [req.userPlayer.id, id],
           },
         },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "idSender", "idReceiver"],
-        },
+        attributes: ["id", "message"],
         include: {
           model: user,
           as: "user",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "password", "bio", "email"],
-          },
+          attributes: ["id", "username", "fullname", "image"],
         },
       });
       res.status(201).json({
