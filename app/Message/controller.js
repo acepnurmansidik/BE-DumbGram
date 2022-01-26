@@ -1,4 +1,3 @@
-const { Op } = require("sequelize");
 const { user, message } = require("../../models");
 
 module.exports = {
@@ -18,7 +17,6 @@ module.exports = {
           idSender: req.userPlayer.id,
           idReceiver: id,
         },
-        attributes: ["id", "message"],
         include: {
           model: user,
           as: "user",
@@ -39,12 +37,13 @@ module.exports = {
       const { id } = req.params;
 
       const data = await message.findAll({
-        idSender: {
-          [Op.or]: {
-            [Op.eq]: [req.userPlayer.id, id],
-          },
+        where: {
+          idSender: [req.userPlayer.id, id],
+          idReceiver: [req.userPlayer.id, id],
         },
-        attributes: ["id", "message"],
+        attributes: {
+          exclude: ["idSender", "idReceiver", "updatedAt"],
+        },
         include: {
           model: user,
           as: "user",
