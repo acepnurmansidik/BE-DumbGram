@@ -1,3 +1,4 @@
+const jwt_decode = require("jwt-decode");
 const { user, follow } = require("../../models");
 
 module.exports = {
@@ -118,6 +119,54 @@ module.exports = {
         message: "Data has been successfully obtained",
         data: { following },
       });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
+  actionFollow: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status = "" } = req.query;
+      const dataDecode = jwt_decode(req.token);
+      let data;
+
+      if (status.length) {
+        if (status === "follow") {
+          data = await follow.create({
+            idUser: dataDecode.id,
+            idFollow: id,
+            status: "following",
+          });
+        }
+      }
+
+      res
+        .status(200)
+        .json({ status: "success", data: { following: data.idFollow } });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
+  actionDeleteFollow: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status = "" } = req.query;
+      const dataDecode = jwt_decode(req.token);
+      let data;
+
+      if (status.length) {
+        if (status === "unfollow") {
+          data = await follow.destroy({
+            where: {
+              idFollow: id,
+              idUser: dataDecode.id,
+              status: "following",
+            },
+          });
+        }
+      }
+
+      res.status(200).json({ status: "success", data: { unfollowing: id } });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
