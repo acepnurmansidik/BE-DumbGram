@@ -5,11 +5,13 @@ const {
   actionEditUser,
   actionDeleteUser,
   getFollowers,
+  getFollowing,
 } = require("./controller");
 const router = express.Router();
 
 router.get("/users", getUsers);
 router.get("/followers/:id", getFollowers);
+router.get("/following/:id", getFollowing);
 router.use(isLoginAuthorization);
 router.patch("/user/:id", actionEditUser);
 router.delete("/user/:id", actionDeleteUser);

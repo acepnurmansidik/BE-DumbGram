@@ -79,6 +79,19 @@ module.exports = {
         },
       });
 
+      res.status(200).json({
+        status: "success",
+        message: "Data has been successfully obtained",
+        data: { followers },
+      });
+    } catch (error) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
+  getFollowing: async (req, res) => {
+    try {
+      const { id } = req.params;
+
       const following = await follow.findAll({
         where: { idUser: id, status: "following" },
         attributes: {
@@ -103,9 +116,9 @@ module.exports = {
       res.status(200).json({
         status: "success",
         message: "Data has been successfully obtained",
-        data: { followers, following },
+        data: { following },
       });
-    } catch (error) {
+    } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
