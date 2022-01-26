@@ -129,13 +129,29 @@ module.exports = {
     try {
       const { id } = req.body;
 
-      const data = await likesfeed.create({
-        idFeed: id,
-        idUser: req.userPlayer.id,
-        countLike: 1,
+      let data = await likesfeed.findOne({
+        where: {
+          idFeed: id,
+          idUser: req.userPlayer.id,
+        },
       });
 
-      res.status(200).json({ status: "sucess", mdata: { feed: data.idFeed } });
+      if (data) {
+        data = await likesfeed.destroy({
+          where: {
+            idFeed: id,
+            idUser: req.userPlayer.id,
+          },
+        });
+      } else {
+        data = await likesfeed.create({
+          idFeed: id,
+          idUser: req.userPlayer.id,
+          countLike: 1,
+        });
+      }
+
+      res.status(200).json({ status: "sucess", data: { feed: id } });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
