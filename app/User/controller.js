@@ -1,4 +1,3 @@
-const jwt_decode = require("jwt-decode");
 const { user, follow } = require("../../models");
 
 module.exports = {
@@ -127,13 +126,12 @@ module.exports = {
     try {
       const { id } = req.params;
       const { status = "" } = req.query;
-      const dataDecode = jwt_decode(req.token);
       let data;
 
       if (status.length) {
         if (status === "follow") {
           data = await follow.create({
-            idUser: dataDecode.id,
+            idUser: req.userPlayer.id,
             idFollow: id,
             status: "following",
           });
@@ -151,7 +149,6 @@ module.exports = {
     try {
       const { id } = req.params;
       const { status = "" } = req.query;
-      const dataDecode = jwt_decode(req.token);
       let data;
 
       if (status.length) {
@@ -159,7 +156,7 @@ module.exports = {
           data = await follow.destroy({
             where: {
               idFollow: id,
-              idUser: dataDecode.id,
+              idUser: req.userPlayer.id,
               status: "following",
             },
           });

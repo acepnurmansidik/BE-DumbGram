@@ -1,16 +1,14 @@
-const jwt_decode = require("jwt-decode");
 const { user, feed, comments, likers } = require("../../models");
 
 module.exports = {
   actionCreateFeed: async (req, res) => {
     try {
       const payload = req.body;
-      const dataDecode = jwt_decode(req.token);
 
       const newFeed = await feed.create({
         ...payload,
         filename: req.file.filename,
-        idUser: dataDecode.id,
+        idUser: req.userPlayer.id,
       });
 
       const dataFeed = await feed.findOne({
@@ -82,10 +80,9 @@ module.exports = {
   actionCreateComment: async (req, res) => {
     try {
       let payload = req.body;
-      const dataDecode = jwt_decode(req.token);
 
       const data = await comments.create({
-        idUser: dataDecode.id,
+        idUser: req.userPlayer.id,
         ...payload,
       });
 
@@ -133,9 +130,11 @@ module.exports = {
   actionAddLikers: async (req, res) => {
     try {
       const { id } = req.body;
-      const dataDecode = jwt_decode(req.token);
 
-      const data = await likers.create({ idFeed: id, idUser: dataDecode.id });
+      const data = await likers.create({
+        idFeed: id,
+        idUser: req.userPlayer.id,
+      });
 
       res.status(200).json({ status: "sucess", mdata: { feed: data.idFeed } });
     } catch (err) {

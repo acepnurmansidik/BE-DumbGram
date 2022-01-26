@@ -1,4 +1,3 @@
-const jwt_decode = require("jwt-decode");
 const { Op } = require("sequelize");
 const { user, message } = require("../../models");
 
@@ -7,17 +6,16 @@ module.exports = {
     try {
       const { id } = req.params;
       const messageSend = req.body.message;
-      const dataDecode = jwt_decode(req.token);
 
       await message.create({
         message: messageSend,
-        idSender: dataDecode.id,
+        idSender: req.userPlayer.id,
         idReceiver: id,
       });
 
       const data = await message.findOne({
         where: {
-          idSender: dataDecode.id,
+          idSender: req.userPlayer.id,
           idReceiver: id,
         },
         attributes: {
@@ -43,12 +41,11 @@ module.exports = {
   getMessage: async (req, res) => {
     try {
       const { id } = req.params;
-      const dataDecode = jwt_decode(req.token);
 
       const data = await message.findAll({
         idSender: {
           [Op.or]: {
-            [Op.eq]: [dataDecode.id, id],
+            [Op.eq]: [req.userPlayer.id, id],
           },
         },
         attributes: {

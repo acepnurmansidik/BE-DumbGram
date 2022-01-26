@@ -13,8 +13,15 @@ module.exports = {
         throw new Error();
       }
 
+      const userPlayer = {
+        id: data.id,
+        username: data.username,
+        fullname: data.fullname,
+      };
+
       //   send data token
       req.token = token;
+      req.userPlayer = userPlayer;
       next();
     } catch (err) {
       res.status(401).json({
