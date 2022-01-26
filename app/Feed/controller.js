@@ -1,4 +1,4 @@
-const { user, feed, comments, likers } = require("../../models");
+const { user, feed, comments, likesfeed } = require("../../models");
 
 module.exports = {
   actionCreateFeed: async (req, res) => {
@@ -127,13 +127,24 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  getLikeFeed: async (req, res) => {
+    try {
+      const data = await likesfeed.findAll({
+        attributes: ["id"],
+      });
+      res.status(200).json({ status: "success", data: { likes: data } });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
   actionAddLikers: async (req, res) => {
     try {
       const { id } = req.body;
 
-      const data = await likers.create({
+      const data = await likesfeed.create({
         idFeed: id,
         idUser: req.userPlayer.id,
+        countLike: 1,
       });
 
       res.status(200).json({ status: "sucess", mdata: { feed: data.idFeed } });

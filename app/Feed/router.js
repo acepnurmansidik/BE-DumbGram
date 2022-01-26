@@ -7,6 +7,7 @@ const {
   actionCreateComment,
   getComments,
   actionAddLikers,
+  getLikeFeed,
 } = require("./controller");
 const { uploadFile } = require("../middleware/uploadFile");
 const router = express.Router();
@@ -20,6 +21,7 @@ router.post("/feed", uploadFile("image"), actionCreateFeed);
 router.post("/comment", actionCreateComment);
 router.get("/comments/:id", getComments);
 // Liker
+router.get("/like", getLikeFeed);
 router.post("/like", actionAddLikers);
 
 module.exports = router;
