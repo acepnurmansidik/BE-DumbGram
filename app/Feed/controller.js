@@ -1,5 +1,5 @@
 const jwt_decode = require("jwt-decode");
-const { user, feed, comments } = require("../../models");
+const { user, feed, comments, likers } = require("../../models");
 
 module.exports = {
   actionCreateFeed: async (req, res) => {
@@ -126,6 +126,18 @@ module.exports = {
       });
 
       res.status(200).json({ status: "success", data: { comments: data } });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
+  actionAddLikers: async (req, res) => {
+    try {
+      const { id } = req.body;
+      const dataDecode = jwt_decode(req.token);
+
+      const data = await likers.create({ idFeed: id, idUser: dataDecode.id });
+
+      res.status(200).json({ status: "sucess", mdata: { feed: data.idFeed } });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
