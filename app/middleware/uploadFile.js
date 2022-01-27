@@ -7,12 +7,11 @@ exports.uploadFile = (imageFile) => {
       cb(null, "src/uploads");
     },
     filename: function (req, file, cb) {
+      let filename =
+        file.originalname.split(".")[file.originalname.split(".").length - 1];
       cb(
         null,
-        Date.now() +
-          Math.random().toString(36).split(".")[1] +
-          "-" +
-          file.originalname.replace(/\s/g, "")
+        Date.now() + Math.random().toString(36).split(".")[1] + "." + filename
       );
     },
   });

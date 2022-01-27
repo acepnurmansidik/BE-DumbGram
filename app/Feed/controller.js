@@ -1,17 +1,18 @@
 const { user, feed, comments, likesfeed } = require("../../models");
+const { uploadPath } = require("../../config");
 
 module.exports = {
   actionCreateFeed: async (req, res) => {
     try {
       const payload = req.body;
 
-      const newFeed = await feed.create({
+      let newFeed = await feed.create({
         ...payload,
         filename: req.file.filename,
         idUser: req.userPlayer.id,
       });
 
-      const dataFeed = await feed.findOne({
+      let dataFeed = await feed.findOne({
         where: {
           id: newFeed.id,
         },
@@ -24,6 +25,8 @@ module.exports = {
           attributes: ["id", "username", "fullname", "image"],
         },
       });
+
+      dataFeed.filename = `${uploadPath}${dataFeed.filename}`;
 
       res.status(201).json({ status: "success", data: { feed: dataFeed } });
     } catch (err) {
@@ -48,6 +51,9 @@ module.exports = {
         },
       });
 
+      dataFeed.map((feed) => {
+        feed.filename = `${uploadPath}${feed.filename}`;
+      });
       res.status(201).json({ status: "success", data: { feed: dataFeed } });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
@@ -64,6 +70,10 @@ module.exports = {
           as: "user",
           attributes: ["id", "username", "fullname", "image"],
         },
+      });
+
+      dataFeed.map((feed) => {
+        feed.filename = `${uploadPath}${feed.filename}`;
       });
 
       res.status(201).json({ status: "success", data: { feed: dataFeed } });
