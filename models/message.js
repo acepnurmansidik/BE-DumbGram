@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       message.belongsTo(models.user, {
         as: "user",
         foreignKey: {
-          name: "idSender",
+          name: "idReceiver",
         },
       });
     }
