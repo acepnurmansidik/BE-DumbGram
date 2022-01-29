@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 // Get routes to the variabel
 const authRouter = require("./app/auth/router");
@@ -12,6 +13,7 @@ const API = "/api/v1";
 const port = 5000;
 
 app.use(express.json());
+app.use(cors());
 
 // Add endpoint grouping and router
 app.use(`${API}`, authRouter);
