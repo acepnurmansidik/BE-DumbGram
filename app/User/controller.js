@@ -17,6 +17,26 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  getUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      let data = await user.findOne({
+        where: {
+          id,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "password"],
+        },
+      });
+      res.status(200).json({
+        status: "success",
+        message: "Data has been successfully obtained",
+        data: { user: data },
+      });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
   actionEditUser: async (req, res) => {
     try {
       const { id } = req.params;

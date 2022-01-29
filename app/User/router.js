@@ -8,13 +8,15 @@ const {
   getFollowing,
   actionFollow,
   actionDeleteFollow,
+  getUser,
 } = require("./controller");
 const router = express.Router();
 
 router.get("/users", getUsers);
+router.use(isLoginAuthorization);
 router.get("/followers/:id", getFollowers);
 router.get("/following/:id", getFollowing);
-router.use(isLoginAuthorization);
+router.get("/user/:id", getUser);
 router.post("/following/:id", actionFollow);
 router.delete("/following/:id", actionDeleteFollow);
 
