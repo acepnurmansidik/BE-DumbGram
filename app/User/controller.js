@@ -1,4 +1,5 @@
 const { user, follow } = require("../../models");
+const { uploadPath } = require("../../config");
 
 module.exports = {
   getUsers: async (req, res) => {
@@ -28,6 +29,9 @@ module.exports = {
           exclude: ["createdAt", "updatedAt", "password"],
         },
       });
+
+      data.image = `${uploadPath}${data.image}`;
+
       res.status(200).json({
         status: "success",
         message: "Data has been successfully obtained",
