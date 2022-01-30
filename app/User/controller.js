@@ -30,8 +30,6 @@ module.exports = {
         },
       });
 
-      data.image = `${uploadPath}${data.image}`;
-
       res.status(200).json({
         status: "success",
         message: "Data has been successfully obtained",
@@ -136,6 +134,12 @@ module.exports = {
             idUser: req.userPlayer.id,
             idFollow: id,
             status: "following",
+          });
+
+          data = await follow.create({
+            idUser: id,
+            idFollow: req.userPlayer.id,
+            status: "followers",
           });
         }
       }

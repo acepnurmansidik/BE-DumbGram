@@ -119,11 +119,6 @@ module.exports = {
             as: "user",
             attributes: ["id", "username", "fullname", "image"],
           },
-          {
-            model: feed,
-            as: "feed",
-            attributes: ["filename", "caption"],
-          },
         ],
       });
 
