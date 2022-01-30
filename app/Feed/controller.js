@@ -37,7 +37,7 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const dataFeed = await feed.findAll({
+      let dataFeed = await feed.findAll({
         where: {
           idUser: id,
         },
@@ -51,8 +51,15 @@ module.exports = {
         },
       });
 
+      const likers = await likesfeed.findAll({
+        where: {
+          idFeed: dataFeed[0].id,
+        },
+      });
+
       dataFeed.map((feed) => {
         feed.filename = `${uploadPath}${feed.filename}`;
+        feed.like = likers.length;
       });
       res.status(201).json({ status: "success", data: { feed: dataFeed } });
     } catch (err) {
