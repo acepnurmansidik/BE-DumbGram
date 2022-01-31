@@ -1,5 +1,4 @@
 const { user, follow } = require("../../models");
-const { uploadPath } = require("../../config");
 
 module.exports = {
   getUsers: async (req, res) => {
@@ -44,7 +43,17 @@ module.exports = {
       const { id } = req.params;
       const payload = req.body;
 
-      await user.update(payload, { where: { id } });
+      if (req.file) {
+        await user.update(
+          { ...payload, image: req.file.filename },
+          { where: { id } }
+        );
+      } else {
+        await user.update(
+          { ...payload, filename: oldIMG.filename },
+          { where: { id } }
+        );
+      }
       const data = await user.findOne({
         where: { id },
         attributes: {

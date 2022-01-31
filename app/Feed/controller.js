@@ -1,4 +1,4 @@
-const { user, feed, comments, likesfeed } = require("../../models");
+const { user, feed, comments, likesfeed, sequelize } = require("../../models");
 const { uploadPath } = require("../../config");
 
 module.exports = {
@@ -51,15 +51,8 @@ module.exports = {
         },
       });
 
-      const likers = await likesfeed.findAll({
-        where: {
-          idFeed: dataFeed[0].id,
-        },
-      });
-
       dataFeed.map((feed) => {
         feed.filename = `${uploadPath}${feed.filename}`;
-        feed.like = likers.length;
       });
       res.status(201).json({ status: "success", data: { feed: dataFeed } });
     } catch (err) {
@@ -77,6 +70,7 @@ module.exports = {
           as: "user",
           attributes: ["id", "username", "fullname", "image"],
         },
+        order: sequelize.random(),
       });
 
       dataFeed.map((feed) => {

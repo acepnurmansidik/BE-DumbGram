@@ -1,5 +1,6 @@
 const express = require("express");
 const { isLoginAuthorization } = require("../middleware/index");
+const { uploadFile } = require("../middleware/uploadFile");
 const {
   getUsers,
   actionEditUser,
@@ -20,7 +21,7 @@ router.get("/user/:id", getUser);
 router.post("/following/:id", actionFollow);
 router.delete("/following/:id", actionDeleteFollow);
 
-router.patch("/user/:id", actionEditUser);
+router.patch("/user/:id", uploadFile("image"), actionEditUser);
 router.delete("/user/:id", actionDeleteUser);
 
 module.exports = router;

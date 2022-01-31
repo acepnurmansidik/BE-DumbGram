@@ -46,11 +46,11 @@ exports.uploadFile = (imageFile) => {
         return res.status(400).send(req.fileValidationError);
       }
       // condition if not image uploaded
-      if (!req.file && !err) {
-        return res.status(400).send({
-          message: "Please select files to upload",
-        });
-      }
+      // if (!req.file && !err) {
+      //   return res.status(400).send({
+      //     message: "Please select files to upload",
+      //   });
+      // }
 
       if (err) {
         // condition if file > file size

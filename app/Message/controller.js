@@ -36,7 +36,7 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const messagePrivate = await message.findAll({
+      const Message = await message.findAll({
         where: {
           idSender: [req.userPlayer.id, id],
           idReceiver: [req.userPlayer.id, id],
@@ -54,7 +54,7 @@ module.exports = {
       res.status(201).json({
         status: "success",
         message: "Message send",
-        data: { Message: messagePrivate },
+        data: { Message },
       });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
@@ -62,26 +62,34 @@ module.exports = {
   },
   getChatList: async (req, res) => {
     try {
-      let messageAll = await message.findAll({
+      let chatidSender = await message.findAll({
         attributes: {
           exclude: ["updatedAt", "message"],
         },
         group: "idReceiver",
         include: {
           model: user,
-          as: "user",
+          as: "userSender",
           attributes: ["id", "username", "fullname", "image"],
         },
       });
 
-      messageAll = messageAll.filter(
-        (itemMessage) => itemMessage.idReceiver !== req.userPlayer.id
-      );
+      let chatidReceiver = await message.findAll({
+        attributes: {
+          exclude: ["updatedAt", "message"],
+        },
+        group: "idReceiver",
+        include: {
+          model: user,
+          as: "userReceiver",
+          attributes: ["id", "username", "fullname", "image"],
+        },
+      });
 
       res.status(201).json({
         status: "success",
         message: "Message send",
-        data: { chatList: messageAll },
+        data: { chatList: { chatidSender, chatidReceiver } },
       });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
