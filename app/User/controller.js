@@ -198,6 +198,14 @@ module.exports = {
               status: "following",
             },
           });
+
+          data = await follow.destroy({
+            where: {
+              idFollow: req.userPlayer.id,
+              idUser: id,
+              status: "followers",
+            },
+          });
         }
       }
 
