@@ -108,6 +108,29 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  getFollower: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const follower = await follow.findOne({
+        where: { idUser: id, status: "followers" },
+        attributes: ["id"],
+        include: {
+          model: user,
+          as: "user",
+          attributes: ["id", "username", "fullname", "image"],
+        },
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "Data has been successfully obtained",
+        data: { follower },
+      });
+    } catch (error) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
   getFollowing: async (req, res) => {
     try {
       const { id } = req.params;
