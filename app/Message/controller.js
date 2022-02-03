@@ -14,15 +14,25 @@ module.exports = {
 
       const data = await message.findOne({
         where: {
+          message: messageSend,
           idSender: req.userPlayer.id,
           idReceiver: id,
         },
-        include: {
-          model: user,
-          as: "user",
-          attributes: ["id", "username", "fullname", "image"],
-        },
+        attributes: ["id", "message"],
+        include: [
+          {
+            model: user,
+            as: "receiver",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+          {
+            model: user,
+            as: "sender",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+        ],
       });
+
       res.status(201).json({
         status: "success",
         message: "Message send",
@@ -42,16 +52,23 @@ module.exports = {
           idReceiver: [req.userPlayer.id, id],
         },
         attributes: {
-          exclude: ["updatedAt"],
+          exclude: ["updatedAt", "idSender", "idReceiver"],
         },
-        include: {
-          model: user,
-          as: "user",
-          attributes: ["id", "username", "fullname", "image"],
-        },
+        include: [
+          {
+            model: user,
+            as: "receiver",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+          {
+            model: user,
+            as: "sender",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+        ],
       });
 
-      res.status(201).json({
+      res.status(200).json({
         status: "success",
         message: "Message send",
         data: { Message },
@@ -62,34 +79,28 @@ module.exports = {
   },
   getChatList: async (req, res) => {
     try {
-      let chatidSender = await message.findAll({
-        attributes: {
-          exclude: ["updatedAt", "message"],
-        },
+      console.log("============================");
+      let chatList = await message.findAll({
         group: "idReceiver",
-        include: {
-          model: user,
-          as: "userSender",
-          attributes: ["id", "username", "fullname", "image"],
-        },
+        attributes: ["id", "createdAt"],
+        include: [
+          {
+            model: user,
+            as: "receiver",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+          {
+            model: user,
+            as: "sender",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+        ],
       });
 
-      let chatidReceiver = await message.findAll({
-        attributes: {
-          exclude: ["updatedAt", "message"],
-        },
-        group: "idReceiver",
-        include: {
-          model: user,
-          as: "userReceiver",
-          attributes: ["id", "username", "fullname", "image"],
-        },
-      });
-
-      res.status(201).json({
+      res.status(200).json({
         status: "success",
         message: "Message send",
-        data: { chatList: { chatidSender, chatidReceiver } },
+        data: { chatList },
       });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
