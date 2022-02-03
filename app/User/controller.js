@@ -85,6 +85,7 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  // Follow =================================================
   getFollowers: async (req, res) => {
     try {
       const { id } = req.params;
@@ -131,7 +132,7 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
-  getFollowing: async (req, res) => {
+  getFollowings: async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -154,62 +155,97 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
-  actionFollow: async (req, res) => {
+  getFollowingDetail: async (req, res) => {
     try {
       const { id } = req.params;
-      const { status = "" } = req.query;
-      let data;
 
-      if (status.length) {
-        if (status === "follow") {
-          data = await follow.create({
-            idUser: req.userPlayer.id,
-            idFollow: id,
-            status: "following",
-          });
+      const following = await follow.findAll({
+        where: {
+          idUser: req.userPlayer.id,
+          idFollow: id,
+          status: "following",
+        },
+        attributes: ["id"],
+        include: {
+          model: user,
+          as: "user",
+          attributes: ["id", "username", "fullname", "image"],
+        },
+      });
 
-          data = await follow.create({
-            idUser: id,
-            idFollow: req.userPlayer.id,
-            status: "followers",
-          });
-        }
-      }
-
-      res
-        .status(200)
-        .json({ status: "success", data: { following: data.idFollow } });
+      res.status(200).json({
+        status: "success",
+        message: "Data has been successfully obtained",
+        data: { following },
+      });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
-  actionDeleteFollow: async (req, res) => {
+  actionToggleFollow: async (req, res) => {
     try {
       const { id } = req.params;
-      const { status = "" } = req.query;
       let data;
 
-      if (status.length) {
-        if (status === "unfollow") {
-          data = await follow.destroy({
-            where: {
-              idFollow: id,
-              idUser: req.userPlayer.id,
-              status: "following",
-            },
-          });
+      // Cek following
+      let dataFollowing = await follow.findOne({
+        where: {
+          idUser: req.userPlayer.id,
+          idFollow: id,
+          status: "following",
+        },
+        raw: true,
+      });
 
-          data = await follow.destroy({
-            where: {
-              idFollow: req.userPlayer.id,
-              idUser: id,
-              status: "followers",
-            },
-          });
-        }
+      // cek followers
+      let dataFollowers = await follow.findOne({
+        where: {
+          idUser: id,
+          idFollow: req.userPlayer.id,
+          status: "followers",
+        },
+        raw: true,
+      });
+
+      if (dataFollowers && dataFollowing) {
+        // if condition true, delete record with status following
+        await follow.destroy({
+          where: {
+            idUser: req.userPlayer.id,
+            idFollow: id,
+            status: "following",
+          },
+          raw: true,
+        });
+
+        // if condition true, delete record with status followers
+        await follow.destroy({
+          where: {
+            idUser: id,
+            idFollow: req.userPlayer.id,
+            status: "followers",
+          },
+          raw: true,
+        });
+
+        res.status(200).json({ status: "success", data: { unfollowing: id } });
+      } else {
+        // if condition false, create record with status following
+        await follow.create({
+          idUser: req.userPlayer.id,
+          idFollow: id,
+          status: "following",
+        });
+
+        // if condition false, create record with status followers
+        await follow.create({
+          idUser: id,
+          idFollow: req.userPlayer.id,
+          status: "followers",
+        });
+
+        res.status(200).json({ status: "success", data: { following: id } });
       }
-
-      res.status(200).json({ status: "success", data: { unfollowing: id } });
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
