@@ -123,8 +123,24 @@ module.exports = {
   },
   getLikeFeed: async (req, res) => {
     try {
+      const { id } = req.params;
       const data = await likesfeed.findAll({
+        where: {
+          idFeed: id,
+        },
         attributes: ["id"],
+        include: [
+          {
+            model: user,
+            as: "user",
+            attributes: ["id", "username", "fullname"],
+          },
+          {
+            model: feed,
+            as: "feed",
+            attributes: ["id"],
+          },
+        ],
       });
       res.status(200).json({ status: "success", data: { likes: data } });
     } catch (err) {
@@ -133,7 +149,7 @@ module.exports = {
   },
   actionAddLikers: async (req, res) => {
     try {
-      const { id } = req.body;
+      const { id } = req.params;
 
       let data = await likesfeed.findOne({
         where: {

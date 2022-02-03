@@ -21,7 +21,7 @@ router.post("/feed", uploadFile("image"), actionCreateFeed);
 router.post("/comment", actionCreateComment);
 router.get("/comments/:id", getComments);
 // Liker
-router.get("/like", getLikeFeed);
-router.post("/like", actionAddLikers);
+router.get("/like/:id", getLikeFeed);
+router.post("/like/:id", actionAddLikers);
 
 module.exports = router;
