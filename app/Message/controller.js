@@ -77,12 +77,45 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
-  getChatList: async (req, res) => {
+  getChatListSender: async (req, res) => {
     try {
-      console.log("============================");
       let chatList = await message.findAll({
+        where: {
+          idSender: req.userPlayer.id,
+        },
         group: "idReceiver",
-        attributes: ["id", "createdAt"],
+        attributes: ["id", "createdAt", "message"],
+        include: [
+          {
+            model: user,
+            as: "receiver",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+          {
+            model: user,
+            as: "sender",
+            attributes: ["id", "username", "fullname", "image"],
+          },
+        ],
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "Message send",
+        data: { chatList },
+      });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
+  getChatListReceiver: async (req, res) => {
+    try {
+      let chatList = await message.findAll({
+        where: {
+          idReceiver: req.userPlayer.id,
+        },
+        group: "idSender",
+        attributes: ["id", "createdAt", "message"],
         include: [
           {
             model: user,
