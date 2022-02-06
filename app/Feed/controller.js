@@ -2,6 +2,7 @@ const { user, feed, comments, likesfeed, sequelize } = require("../../models");
 const { uploadPath } = require("../../config");
 
 module.exports = {
+  // FEED ================================================
   actionCreateFeed: async (req, res) => {
     try {
       const payload = req.body;
@@ -82,6 +83,7 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  // COMMENT =============================================
   actionCreateComment: async (req, res) => {
     try {
       let payload = req.body;
@@ -121,6 +123,7 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  // LIKE ================================================
   getLikeFeed: async (req, res) => {
     try {
       const { id } = req.params;

@@ -1,15 +1,25 @@
-const { user, message } = require("../../models");
+const { user, message, notifmessage } = require("../../models");
 
 module.exports = {
+  // SEND MESSAGE ====================================================
   actionSendMessage: async (req, res) => {
     try {
       const { id } = req.params;
       const messageSend = req.body.message;
 
+      // create message
       await message.create({
         message: messageSend,
         idSender: req.userPlayer.id,
         idReceiver: id,
+      });
+
+      // create notif message
+      await notifmessage.create({
+        title: `${req.userPlayer.username} messaged you`,
+        status: "unread",
+        idReceiver: id,
+        idSender: req.userPlayer.id,
       });
 
       const data = await message.findOne({
@@ -77,6 +87,7 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
+  // CHAT LIST MESSAGE ===============================================
   getChatListSender: async (req, res) => {
     try {
       let chatList = await message.findAll({
@@ -135,6 +146,57 @@ module.exports = {
         message: "Message send",
         data: { chatList },
       });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
+  // GET NOTIF MESSAGE ===============================================
+  getNotifMessage: async (req, res) => {
+    try {
+      const notif = await notifmessage.findAll({
+        where: {
+          status: "unread",
+          idReceiver: req.userPlayer.id,
+        },
+        attributes: ["id", "title", "status"],
+        group: "idSender",
+        include: [
+          {
+            model: user,
+            as: "receiver",
+            attributes: ["id", "fullname", "image"],
+          },
+          {
+            model: user,
+            as: "sender",
+            attributes: ["id", "fullname", "image"],
+          },
+        ],
+      });
+      res.status(200).json({
+        status: "success",
+        message: "Message send",
+        data: { notif },
+      });
+    } catch (err) {
+      res.status(500).json({ status: "failed", message: "Server error" });
+    }
+  },
+  actionUpdateNotif: async (req, res) => {
+    const { id } = req.params;
+    const notif = await notifmessage.destroy({
+      where: {
+        status: "unread",
+        idReceiver: req.userPlayer.id,
+        idSender: id,
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Notifaication has been deleted",
+      data: { notif },
+    });
+    try {
     } catch (err) {
       res.status(500).json({ status: "failed", message: "Server error" });
     }

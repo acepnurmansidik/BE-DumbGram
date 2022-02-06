@@ -1,6 +1,7 @@
 const { user, follow } = require("../../models");
 
 module.exports = {
+  // USER ===================================================
   getUsers: async (req, res) => {
     try {
       let data = await user.findAll({
@@ -85,7 +86,7 @@ module.exports = {
       res.status(500).json({ status: "failed", message: "Server error" });
     }
   },
-  // Follow =================================================
+  // FOLLOW =================================================
   getFollowers: async (req, res) => {
     try {
       const { id } = req.params;

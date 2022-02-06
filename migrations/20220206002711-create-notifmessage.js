@@ -1,23 +1,20 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("likesfeeds", {
+    await queryInterface.createTable("notifmessages", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      idFeed: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "feeds",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+      title: {
+        type: Sequelize.STRING,
       },
-      idUser: {
+      status: {
+        type: Sequelize.STRING,
+      },
+      idReceiver: {
         type: Sequelize.INTEGER,
         references: {
           model: "users",
@@ -26,8 +23,14 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      countLike: {
+      idSender: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -40,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("likesfeeds");
+    await queryInterface.dropTable("notifmessages");
   },
 };
