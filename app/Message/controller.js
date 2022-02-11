@@ -1,4 +1,4 @@
-const { user, message, notifmessage } = require("../../models");
+const { user, chat, notifmessage } = require("../../models");
 
 module.exports = {
   // SEND MESSAGE ====================================================
@@ -8,7 +8,7 @@ module.exports = {
       const messageSend = req.body.message;
 
       // create message
-      await message.create({
+      await chat.create({
         message: messageSend,
         idSender: req.userPlayer.id,
         idReceiver: id,
@@ -22,7 +22,7 @@ module.exports = {
         idSender: req.userPlayer.id,
       });
 
-      const data = await message.findOne({
+      const data = await chat.findOne({
         where: {
           message: messageSend,
           idSender: req.userPlayer.id,
@@ -56,7 +56,7 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const Message = await message.findAll({
+      const Message = await chat.findAll({
         where: {
           idSender: [req.userPlayer.id, id],
           idReceiver: [req.userPlayer.id, id],
@@ -90,7 +90,7 @@ module.exports = {
   // CHAT LIST MESSAGE ===============================================
   getChatListSender: async (req, res) => {
     try {
-      let chatList = await message.findAll({
+      let chatList = await chat.findAll({
         where: {
           idSender: req.userPlayer.id,
         },
@@ -121,7 +121,7 @@ module.exports = {
   },
   getChatListReceiver: async (req, res) => {
     try {
-      let chatList = await message.findAll({
+      let chatList = await chat.findAll({
         where: {
           idReceiver: req.userPlayer.id,
         },
@@ -183,6 +183,7 @@ module.exports = {
     }
   },
   actionUpdateNotif: async (req, res) => {
+    p;
     const { id } = req.params;
     const notif = await notifmessage.destroy({
       where: {
