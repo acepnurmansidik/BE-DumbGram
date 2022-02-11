@@ -183,7 +183,6 @@ module.exports = {
     }
   },
   actionUpdateNotif: async (req, res) => {
-    p;
     const { id } = req.params;
     const notif = await notifmessage.destroy({
       where: {
